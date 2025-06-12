@@ -1,0 +1,13 @@
+{
+  "name": "volunteerhub",
+  "version": "1.0.0",
+  "description": "Full-stack Volunteer Registration System — MongoDB + Express + JWT",
+  "scripts": {
+    "install:backend": "cd backend && npm install",
+    "seed": "cd backend && npm run seed",
+    "dev": "cd backend && npm run dev",
+    "start": "cd backend && npm start"
+  },
+  "author": "VolunteerHub",
+  "license": "MIT"
+}
