@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VolunteerHub</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.30.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --primary:#2563EB;--primary-dark:#1D4ED8;--primary-light:#EFF6FF;
+  --success:#16A34A;--success-light:#F0FDF4;
+  --warning:#D97706;--warning-light:#FFFBEB;
+  --danger:#DC2626;--danger-light:#FEF2F2;
+  --gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;
+  --gray-300:#D1D5DB;--gray-400:#9CA3AF;--gray-500:#6B7280;
+  --gray-600:#4B5563;--gray-700:#374151;--gray-800:#1F2937;--gray-900:#111827;
+  --radius:8px;--radius-lg:12px;
+}
+body{font-family:-apple-system,'Inter',sans-serif;background:var(--gray-50);color:var(--gray-800);font-size:14px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:#fff;border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid var(--gray-200)}
+.logo-mark{font-size:16px;font-weight:700;color:var(--gray-900)}
+.logo-sub{font-size:11px;color:var(--gray-500);margin-top:2px}
+.sidebar-nav{flex:1;padding:12px 8px;overflow-y:auto}
+.nav-label{font-size:10px;font-weight:600;color:var(--gray-400);text-transform:uppercase;letter-spacing:.8px;padding:8px 8px 4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;color:var(--gray-600);font-size:13px;font-weight:500;margin-bottom:2px;transition:all .15s}
+.nav-item:hover{background:var(--gray-100);color:var(--gray-900)}
+.nav-item.active{background:var(--primary-light);color:var(--primary);font-weight:600}
+.nav-item i{font-size:16px;width:18px}
+.sidebar-footer{padding:12px;border-top:1px solid var(--gray-200)}
+.user-pill{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--radius);background:var(--gray-50)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.user-name{font-size:13px;font-weight:600;color:var(--gray-800)}
+.user-role{font-size:11px;color:var(--gray-500)}
+.main{margin-left:220px;flex:1}
+.topbar{background:#fff;border-bottom:1px solid var(--gray-200);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:90}
+.page-title{font-size:16px;font-weight:700;color:var(--gray-900)}
+.breadcrumb{font-size:12px;color:var(--gray-500)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s}
+.btn-primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn-primary:hover{background:var(--primary-dark)}
+.btn-primary:disabled{opacity:.6;cursor:not-allowed}
+.btn-outline{background:#fff;color:var(--gray-700);border-color:var(--gray-200)}
+.btn-outline:hover{background:var(--gray-50)}
+.btn-ghost{background:transparent;color:var(--gray-600);border-color:transparent}
+.btn-ghost:hover{background:var(--gray-100)}
+.btn-danger{background:var(--danger);color:#fff}
+.btn-success{background:var(--success);color:#fff}
+.btn-sm{padding:5px 10px;font-size:12px}
+.content{padding:24px}
+.page{display:none}.page.active{display:block}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:16px 20px}
+.stat-label{font-size:12px;color:var(--gray-500);font-weight:500;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.stat-value{font-size:28px;font-weight:700;color:var(--gray-900);line-height:1}
+.stat-change{font-size:12px;margin-top:6px;color:var(--success);display:flex;align-items:center;gap:4px}
+.card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);margin-bottom:20px}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:600;color:var(--gray-900)}
+.card-body{padding:20px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px;padding:10px 16px;background:var(--gray-50);border-bottom:1px solid var(--gray-200)}
+td{padding:12px 16px;border-bottom:1px solid var(--gray-100);color:var(--gray-700)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--gray-50)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-success{background:var(--success-light);color:var(--success)}
+.badge-warning{background:var(--warning-light);color:var(--warning)}
+.badge-danger{background:var(--danger-light);color:var(--danger)}
+.badge-gray{background:var(--gray-100);color:var(--gray-600)}
+.badge-blue{background:#EFF6FF;color:#1D4ED8}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:13px;font-weight:500;color:var(--gray-700);margin-bottom:6px}
+.req{color:var(--danger)}
+.form-input,.form-select,.form-textarea{width:100%;padding:9px 12px;border:1px solid var(--gray-300);border-radius:var(--radius);font-size:13px;color:var(--gray-800);background:#fff;transition:border .15s;font-family:inherit}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.form-input.err{border-color:var(--danger)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.err-msg{font-size:11px;color:var(--danger);margin-top:4px;display:none}
+.err-msg.show{display:block}
+.checkbox-group{display:flex;flex-direction:column;gap:8px}
+.checkbox-item{display:flex;align-items:center;gap:8px;cursor:pointer}
+.checkbox-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--primary)}
+.pill-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.pill{padding:4px 12px;border:1px solid var(--gray-300);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;color:var(--gray-600);background:#fff;transition:all .15s}
+.pill:hover,.pill.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:var(--radius-lg);width:100%;max-width:560px;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);transform:translateY(10px);transition:transform .2s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-size:15px;font-weight:700;color:var(--gray-900)}
+.modal-body{padding:24px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:10px}
+.search-bar{display:flex;align-items:center;gap:8px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:7px 12px;width:240px}
+.search-bar i{color:var(--gray-400);font-size:15px}
+.search-bar input{border:none;background:transparent;font-size:13px;color:var(--gray-700);outline:none;flex:1}
+.filter-bar{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.progress-bar{height:6px;background:var(--gray-200);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:var(--primary);transition:width .4s}
+.chart-bars{display:flex;align-items:flex-end;gap:8px;height:110px;padding:0 4px}
+.chart-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px}
+.chart-bar{width:100%;border-radius:4px 4px 0 0;background:var(--primary);min-height:4px}
+.chart-bar-label{font-size:10px;color:var(--gray-500)}
+.activity-list{display:flex;flex-direction:column}
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--gray-100)}
+.activity-item:last-child{border-bottom:none}
+.a-dot{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:1px}
+.a-text{font-size:13px;color:var(--gray-700)}
+.a-time{font-size:11px;color:var(--gray-400);margin-top:2px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info-row{display:flex;flex-direction:column;gap:3px}
+.info-key{font-size:11px;color:var(--gray-400);font-weight:500;text-transform:uppercase;letter-spacing:.4px}
+.info-val{font-size:13px;color:var(--gray-800);font-weight:500}
+.skill-tag{padding:3px 9px;background:var(--primary-light);color:var(--primary);border-radius:20px;font-size:11px;font-weight:500;display:inline-block;margin:2px}
+.divider{height:1px;background:var(--gray-200);margin:16px 0}
+.steps{display:flex;align-items:center;gap:0;margin-bottom:24px}
+.step{display:flex;align-items:center;gap:8px}
+.step-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;border:2px solid var(--gray-300);color:var(--gray-400);background:#fff;flex-shrink:0;transition:all .3s}
+.step-num.done{background:var(--success);border-color:var(--success);color:#fff}
+.step-num.cur{background:var(--primary);border-color:var(--primary);color:#fff}
+.step-label{font-size:12px;font-weight:500;color:var(--gray-500)}
+.step-label.cur{color:var(--primary);font-weight:600}
+.step-line{flex:1;height:2px;background:var(--gray-200);margin:0 8px;min-width:28px}
+.step-line.done{background:var(--success)}
+.reg-hero{background:linear-gradient(135deg,#1D4ED8,#3B82F6);border-radius:var(--radius-lg);padding:26px;color:#fff;margin-bottom:24px}
+.reg-hero h2{font-size:20px;font-weight:700;margin-bottom:5px}
+.reg-hero p{font-size:13px;opacity:.85}
+.report-card{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:18px;display:flex;align-items:center;gap:16px;cursor:pointer;transition:all .15s;margin-bottom:10px}
+.report-card:hover{border-color:var(--primary);background:var(--primary-light)}
+.report-icon{width:42px;height:42px;border-radius:var(--radius);background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.notif{position:fixed;top:20px;right:20px;background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:14px 18px;box-shadow:0 10px 30px rgba(0,0,0,.12);z-index:500;display:flex;align-items:center;gap:12px;font-size:13px;font-weight:500;transform:translateX(130%);transition:transform .3s;max-width:320px}
+.notif.show{transform:translateX(0)}
+.notif-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.notif-s .notif-icon{background:var(--success-light);color:var(--success)}
+.notif-d .notif-icon{background:var(--danger-light);color:var(--danger)}
+.auth-screen{position:fixed;inset:0;background:var(--gray-50);z-index:300;display:flex;align-items:center;justify-content:center}
+.auth-box{background:#fff;border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:40px;width:100%;max-width:400px;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.auth-logo{text-align:center;margin-bottom:28px}
+.auth-icon{width:52px;height:52px;border-radius:var(--radius-lg);background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 12px}
+.auth-title{font-size:22px;font-weight:700;color:var(--gray-900);text-align:center;margin-bottom:5px}
+.auth-sub{font-size:13px;color:var(--gray-500);text-align:center;margin-bottom:28px}
+.tab-bar{display:flex;border-bottom:2px solid var(--gray-200);margin-bottom:22px}
+.tab{padding:9px 18px;font-size:13px;font-weight:500;color:var(--gray-500);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.loading-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.api-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:500}
+.api-dot{width:7px;height:7px;border-radius:50%;background:var(--gray-300)}
+.api-dot.ok{background:var(--success)}
+.api-dot.err{background:var(--danger)}
+.empty-state{text-align:center;padding:40px 24px;color:var(--gray-500)}
+.empty-state i{font-size:38px;color:var(--gray-300);display:block;margin-bottom:10px}
+.skeleton{background:linear-gradient(90deg,var(--gray-100) 25%,var(--gray-200) 50%,var(--gray-100) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:4px;height:14px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+</head>
+<body>
+
+<!-- Notification -->
+<div class="notif" id="notif">
+  <div class="notif-icon"><i id="notifIcon" class="ti ti-check"></i></div>
+  <span id="notifText"></span>
+</div>
+
+<!-- Auth Screen -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-icon"><i class="ti ti-heart-handshake"></i></div>
+      <div class="auth-title">VolunteerHub</div>
+      <div class="auth-sub">Powered by MongoDB Atlas + JWT</div>
+    </div>
+    <div class="tab-bar">
+      <div class="tab active" id="tabLogin" onclick="switchTab('login')">Sign in</div>
+      <div class="tab" id="tabReg" onclick="switchTab('reg')">New account</div>
+    </div>
+
+    <!-- Login -->
+    <div id="loginForm">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="l_email" type="email" value="admin@volunteerhub.org" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="l_pass" type="password" value="admin123" placeholder="••••••••">
+      </div>
+      <div id="loginErr" class="err-msg" style="margin-bottom:12px"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" id="loginBtn" onclick="doLogin()">
+        <i class="ti ti-login"></i> Sign in
+      </button>
+      <p style="text-align:center;font-size:11px;color:var(--gray-400);margin-top:14px">
+        Demo: admin@volunteerhub.org / admin123<br>
+        <span id="apiStatusLine" class="api-status" style="justify-content:center;margin-top:6px">
+          <span class="api-dot" id="apiDot"></span><span id="apiStatusText">Checking API…</span>
+        </span>
+      </p>
+    </div>
+
+    <!-- Register -->
+    <div id="regForm" style="display:none">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First name</label><input class="form-input" id="r_nameF" placeholder="Priya"></div>
+        <div class="form-group"><label class="form-label">Last name</label><input class="form-input" id="r_nameL" placeholder="Sharma"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="r_email" type="email" placeholder="priya@email.com"></div>
+      <div class="form-group"><label class="form-label">Password</label><input class="form-input" id="r_pass" type="password" placeholder="Min 6 characters"></div>
+      <div id="regErr" class="err-msg" style="margin-bottom:12px"></div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:11px" id="regBtn" onclick="doRegister()">
+        <i class="ti ti-user-plus"></i> Create account
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div class="app" id="mainApp" style="display:none">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><i class="ti ti-heart-handshake" style="color:var(--primary)"></i> VolunteerHub</div>
+      <div class="logo-sub">Community Platform</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-label">Main</div>
+      <div class="nav-item active" onclick="nav('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="nav-item" onclick="nav('register',this)"><i class="ti ti-user-plus"></i> Registration</div>
+      <div class="nav-label">Manage</div>
+      <div class="nav-item" onclick="nav('volunteers',this)"><i class="ti ti-users"></i> Volunteers</div>
+      <div class="nav-item" onclick="nav('events',this)"><i class="ti ti-calendar-event"></i> Events</div>
+      <div class="nav-label">Admin</div>
+      <div class="nav-item" id="navAdmin" onclick="nav('admin',this)"><i class="ti ti-shield-check"></i> Admin Panel</div>
+      <div class="nav-item" onclick="nav('reports',this)"><i class="ti ti-report-analytics"></i> Reports</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-pill">
+        <div class="avatar" id="sideAvatar">AD</div>
+        <div><div class="user-name" id="sideName">Loading…</div><div class="user-role" id="sideRole">—</div></div>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="width:100%;margin-top:8px;justify-content:center" onclick="doLogout()">
+        <i class="ti ti-logout"></i> Sign out
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="page-title" id="pageTitle">Dashboard</div>
+        <div class="breadcrumb" id="pageCrumb">VolunteerHub / Dashboard</div>
+      </div>
+      <div class="topbar-right">
+        <div class="api-status"><div class="api-dot ok" id="mainApiDot"></div><span id="mainApiText" style="font-size:11px;color:var(--gray-500)">MongoDB connected</span></div>
+        <button class="btn btn-primary btn-sm" onclick="nav('register',null)"><i class="ti ti-plus"></i> Add volunteer</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-users" style="color:var(--primary)"></i> Total volunteers</div><div class="stat-value" id="st-total">—</div><div class="stat-change"><i class="ti ti-database"></i> Live from MongoDB</div></div>
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-user-check" style="color:var(--success)"></i> Active</div><div class="stat-value" id="st-active">—</div><div class="stat-change"><i class="ti ti-trending-up"></i> Approved volunteers</div></div>
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-clock" style="color:var(--warning)"></i> Pending review</div><div class="stat-value" id="st-pending">—</div><div class="stat-change" style="color:var(--warning)"><i class="ti ti-alert-circle"></i> Needs admin action</div></div>
+          <div class="stat-card"><div class="stat-label"><i class="ti ti-calendar-event" style="color:var(--danger)"></i> Events</div><div class="stat-value" id="st-events">—</div><div class="stat-change"><i class="ti ti-calendar"></i> Upcoming</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Monthly registrations</span><span class="badge badge-blue">Last 7 months</span></div>
+            <div class="card-body"><div class="chart-bars" id="chartBars"><div style="color:var(--gray-400);font-size:13px;margin:auto">Loading chart…</div></div></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Top skills</span></div>
+            <div class="card-body" id="skillsChart"><div class="skeleton" style="margin-bottom:10px"></div><div class="skeleton" style="margin-bottom:10px;width:80%"></div><div class="skeleton" style="width:60%"></div></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Recent volunteers</span></div>
+            <div class="table-wrap"><table><thead><tr><th>Name</th><th>Skills</th><th>Status</th></tr></thead><tbody id="recentBody"></tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Quick actions</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+              <button class="btn btn-outline" onclick="nav('admin',null)"><i class="ti ti-shield-check"></i> Review pending approvals</button>
+              <button class="btn btn-outline" onclick="openEventModal()"><i class="ti ti-calendar-plus"></i> Create new event</button>
+              <button class="btn btn-outline" onclick="generateReport('volunteers')"><i class="ti ti-report"></i> Generate volunteer report</button>
+              <button class="btn btn-outline" onclick="exportCSV()"><i class="ti ti-download"></i> Export to CSV</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REGISTRATION -->
+      <div class="page" id="page-register">
+        <div class="reg-hero">
+          <h2><i class="ti ti-heart-handshake"></i> Join our volunteer community</h2>
+          <p>Fill in the form below. Your application will be reviewed by an admin before activation.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="step-num cur" id="sn1">1</div><div class="step-label cur" id="sl1">Personal info</div></div>
+          <div class="step-line" id="stl1"></div>
+          <div class="step"><div class="step-num" id="sn2">2</div><div class="step-label" id="sl2">Skills &amp; availability</div></div>
+          <div class="step-line" id="stl2"></div>
+          <div class="step"><div class="step-num" id="sn3">3</div><div class="step-label" id="sl3">Submitted</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title" id="stepTitle">Step 1 — Personal information</span></div>
+          <div class="card-body">
+            <!-- Step 1 -->
+            <div id="sf1">
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">First name <span class="req">*</span></label><input class="form-input" id="v_fn" placeholder="Rahul"><div class="err-msg" id="e_fn">Required</div></div>
+                <div class="form-group"><label class="form-label">Last name <span class="req">*</span></label><input class="form-input" id="v_ln" placeholder="Verma"><div class="err-msg" id="e_ln">Required</div></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Email <span class="req">*</span></label><input class="form-input" id="v_em" type="email" placeholder="rahul@example.com"><div class="err-msg" id="e_em">Valid email required</div></div>
+                <div class="form-group"><label class="form-label">Phone <span class="req">*</span></label><input class="form-input" id="v_ph" placeholder="+91 98765 43210"><div class="err-msg" id="e_ph">Required</div></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Date of birth</label><input class="form-input" id="v_dob" type="date"></div>
+                <div class="form-group"><label class="form-label">Gender</label><select class="form-select" id="v_gn"><option value="">Prefer not to say</option><option>Male</option><option>Female</option><option>Non-binary</option></select></div>
+              </div>
+              <div class="form-group"><label class="form-label">Address</label><input class="form-input" id="v_addr" placeholder="Street, City, State"></div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Emergency contact name</label><input class="form-input" id="v_emn" placeholder="Contact name"></div>
+                <div class="form-group"><label class="form-label">Emergency contact phone</label><input class="form-input" id="v_emp" placeholder="+91 XXXXX XXXXX"></div>
+              </div>
+            </div>
+            <!-- Step 2 -->
+            <div id="sf2" style="display:none">
+              <div class="form-group">
+                <label class="form-label">Skills <span class="req">*</span></label>
+                <div class="pill-group" id="skillPills">
+                  <div class="pill" onclick="togglePill(this,'Teaching')">Teaching</div>
+                  <div class="pill" onclick="togglePill(this,'Medical')">Medical</div>
+                  <div class="pill" onclick="togglePill(this,'Construction')">Construction</div>
+                  <div class="pill" onclick="togglePill(this,'Cooking')">Cooking</div>
+                  <div class="pill" onclick="togglePill(this,'Driving')">Driving</div>
+                  <div class="pill" onclick="togglePill(this,'Technology')">Technology</div>
+                  <div class="pill" onclick="togglePill(this,'Counseling')">Counseling</div>
+                  <div class="pill" onclick="togglePill(this,'Fundraising')">Fundraising</div>
+                  <div class="pill" onclick="togglePill(this,'Photography')">Photography</div>
+                  <div class="pill" onclick="togglePill(this,'Legal')">Legal</div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Available days</label>
+                <div class="checkbox-group" style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                  <label class="checkbox-item"><input type="checkbox" name="avail" value="Monday"><span>Monday</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="avail" value="Tuesday"><span>Tuesday</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="avail" value="Wednesday"><span>Wednesday</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="avail" value="Thursday"><span>Thursday</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="avail" value="Friday"><span>Friday</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="avail" value="Saturday"><span>Saturday</span></label>
+                  <label class="checkbox-item"><input type="checkbox" name="avail" value="Sunday"><span>Sunday</span></label>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Hours per week</label><select class="form-select" id="v_hrs"><option>1–5 hours</option><option>5–10 hours</option><option>10–20 hours</option><option>20+ hours</option></select></div>
+                <div class="form-group"><label class="form-label">Preferred role</label><select class="form-select" id="v_rol"><option>Frontline worker</option><option>Coordinator</option><option>Trainer</option><option>Remote support</option><option>Event helper</option></select></div>
+              </div>
+              <div class="form-group"><label class="form-label">Experience</label><select class="form-select" id="v_exp"><option>No prior experience</option><option>Less than 1 year</option><option>1–3 years</option><option>3–5 years</option><option>5+ years</option></select></div>
+              <div class="form-group"><label class="form-label">Why do you want to volunteer?</label><textarea class="form-textarea" id="v_mot" placeholder="Tell us what motivates you…"></textarea></div>
+              <label class="checkbox-item"><input type="checkbox" id="v_terms"><span>I agree to the volunteer code of conduct and terms</span></label>
+              <div class="err-msg" id="e_terms" style="margin-top:4px">You must agree to proceed</div>
+            </div>
+            <!-- Step 3 -->
+            <div id="sf3" style="display:none;text-align:center;padding:32px 0">
+              <div style="width:64px;height:64px;border-radius:50%;background:var(--success-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;color:var(--success)"><i class="ti ti-check"></i></div>
+              <h3 style="font-size:18px;font-weight:700;margin-bottom:8px">Registration submitted!</h3>
+              <p style="font-size:13px;color:var(--gray-500);max-width:360px;margin:0 auto 24px">Your data has been saved to MongoDB. An admin will review and activate your profile within 2 business days.</p>
+              <div style="background:var(--gray-50);border-radius:var(--radius-lg);padding:16px;text-align:left;max-width:400px;margin:0 auto" id="summaryBox"></div>
+            </div>
+          </div>
+          <div style="padding:16px 20px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:10px">
+            <button class="btn btn-outline" id="btnBack" onclick="regBack()" style="display:none"><i class="ti ti-arrow-left"></i> Back</button>
+            <button class="btn btn-primary" id="btnNext" onclick="regNext()">Next <i class="ti ti-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOLUNTEERS -->
+      <div class="page" id="page-volunteers">
+        <div class="filter-bar">
+          <div class="search-bar"><i class="ti ti-search"></i><input type="text" id="volSearch" placeholder="Search by name or email…" oninput="loadVolunteers()"></div>
+          <select class="form-select" style="width:140px" id="volStatus" onchange="loadVolunteers()">
+            <option value="">All statuses</option><option>Active</option><option>Pending</option><option>Inactive</option>
+          </select>
+          <button class="btn btn-outline btn-sm" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">All volunteers</span><span class="badge badge-blue" id="volCount">—</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Skills</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="volBody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- EVENTS -->
+      <div class="page" id="page-events">
+        <div class="filter-bar">
+          <button class="btn btn-primary btn-sm" onclick="openEventModal()"><i class="ti ti-plus"></i> New event</button>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Events</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Event</th><th>Date</th><th>Location</th><th>Needed</th><th>Registered</th><th>Status</th><th>Action</th></tr></thead><tbody id="evBody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="page" id="page-admin">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Pending approvals</span><span class="badge badge-warning" id="pendCount">0</span></div>
+            <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Applied</th><th>Actions</th></tr></thead><tbody id="pendBody"></tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Admin tools</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:10px">
+              <button class="btn btn-outline" onclick="loadDashboard()"><i class="ti ti-refresh"></i> Refresh all data</button>
+              <button class="btn btn-outline" onclick="exportCSV()"><i class="ti ti-download"></i> Export volunteer CSV</button>
+              <button class="btn btn-outline" onclick="nav('reports',null)"><i class="ti ti-report-analytics"></i> Open reports</button>
+              <button class="btn btn-outline" onclick="showNotif('Feature coming soon','s')"><i class="ti ti-mail"></i> Broadcast email</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">All volunteers — admin view</span></div>
+          <div class="table-wrap"><table><thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Role</th><th>Experience</th><th>Actions</th></tr></thead><tbody id="adminBody"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="page-reports">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:12px">Generate a report</div>
+            <div class="report-card" onclick="generateReport('volunteers')"><div class="report-icon"><i class="ti ti-users"></i></div><div><div style="font-weight:600">Volunteer summary</div><div style="font-size:12px;color:var(--gray-500);margin-top:3px">Full list with status, skills, role</div></div><i class="ti ti-chevron-right" style="color:var(--gray-400);margin-left:auto"></i></div>
+            <div class="report-card" onclick="generateReport('skills')"><div class="report-icon"><i class="ti ti-tools"></i></div><div><div style="font-weight:600">Skills breakdown</div><div style="font-size:12px;color:var(--gray-500);margin-top:3px">Distribution across all volunteers</div></div><i class="ti ti-chevron-right" style="color:var(--gray-400);margin-left:auto"></i></div>
+            <div class="report-card" onclick="generateReport('events')"><div class="report-icon"><i class="ti ti-calendar-event"></i></div><div><div style="font-weight:600">Event participation</div><div style="font-size:12px;color:var(--gray-500);margin-top:3px">Attendance and fill rates</div></div><i class="ti ti-chevron-right" style="color:var(--gray-400);margin-left:auto"></i></div>
+            <div class="report-card" onclick="generateReport('monthly')"><div class="report-icon"><i class="ti ti-chart-bar"></i></div><div><div style="font-weight:600">Monthly registrations</div><div style="font-size:12px;color:var(--gray-500);margin-top:3px">New volunteers per month</div></div><i class="ti ti-chevron-right" style="color:var(--gray-400);margin-left:auto"></i></div>
+          </div>
+          <div class="card" style="margin:0">
+            <div class="card-header"><span class="card-title" id="rTitle">Select a report</span><button class="btn btn-outline btn-sm" id="rDl" style="display:none" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button></div>
+            <div class="card-body" id="rBody"><div class="empty-state"><i class="ti ti-report-analytics"></i><p>Choose a report type</p></div></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- View Volunteer Modal -->
+<div class="modal-overlay" id="viewModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Volunteer profile</span><button class="btn btn-ghost btn-sm" onclick="closeModal('viewModal')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body" id="viewBody"></div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('viewModal')">Close</button></div>
+  </div>
+</div>
+
+<!-- New Event Modal -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Create event</span><button class="btn btn-ghost btn-sm" onclick="closeModal('eventModal')"><i class="ti ti-x"></i></button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Event name <span class="req">*</span></label><input class="form-input" id="ev_n" placeholder="Community food drive"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Date</label><input class="form-input" type="date" id="ev_d"></div>
+        <div class="form-group"><label class="form-label">Location</label><input class="form-input" id="ev_l" placeholder="City Hall, Hyderabad"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Volunteers needed</label><input class="form-input" type="number" id="ev_nv" value="10" min="1"></div>
+        <div class="form-group"><label class="form-label">Category</label><select class="form-select" id="ev_c"><option>Education</option><option>Environment</option><option>Healthcare</option><option>Food &amp; hunger</option><option>Animal welfare</option><option>Disaster relief</option></select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="ev_desc" placeholder="What will volunteers be doing?"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('eventModal')">Cancel</button>
+      <button class="btn btn-primary" id="evBtn" onclick="submitEvent()"><i class="ti ti-plus"></i> Create event</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────────────────────
+const BASE = 'http://localhost:5000/api';
+
+// ── In-memory cache (fallback when API not connected) ─────────────────────
+let CACHE = {
+  volunteers: [], events: [], stats: null,
+  selectedSkills: [], regStep: 1, apiOnline: false
+};
+
+// ── Token / User ──────────────────────────────────────────────────────────
+const getToken = () => localStorage.getItem('vh_token');
+const setAuth  = (token, user) => { localStorage.setItem('vh_token', token); localStorage.setItem('vh_user', JSON.stringify(user)); };
+const clearAuth = () => { localStorage.removeItem('vh_token'); localStorage.removeItem('vh_user'); };
+const getUser  = () => JSON.parse(localStorage.getItem('vh_user') || 'null');
+
+// ── Fetch wrapper ─────────────────────────────────────────────────────────
+async function api(path, opts = {}) {
+  const token = getToken();
+  const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  const res = await fetch(`${BASE}${path}`, { ...opts, headers });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || `Error ${res.status}`);
+  return data;
+}
+
+// ── API health check ──────────────────────────────────────────────────────
+async function checkAPI() {
+  try {
+    await fetch(`${BASE}/health`, { signal: AbortSignal.timeout(3000) });
+    CACHE.apiOnline = true;
+    document.getElementById('apiDot').className = 'api-dot ok';
+    document.getElementById('apiStatusText').textContent = 'API online ✓';
+    document.getElementById('mainApiDot').className = 'api-dot ok';
+    document.getElementById('mainApiText').textContent = 'MongoDB connected';
+  } catch {
+    CACHE.apiOnline = false;
+    document.getElementById('apiDot').className = 'api-dot err';
+    document.getElementById('apiStatusText').textContent = 'API offline — using demo data';
+    document.getElementById('mainApiDot').className = 'api-dot err';
+    document.getElementById('mainApiText').textContent = 'API offline (demo mode)';
+  }
+}
+
+// ── Auth ──────────────────────────────────────────────────────────────────
+function switchTab(t) {
+  document.getElementById('tabLogin').classList.toggle('active', t === 'login');
+  document.getElementById('tabReg').classList.toggle('active', t === 'reg');
+  document.getElementById('loginForm').style.display = t === 'login' ? 'block' : 'none';
+  document.getElementById('regForm').style.display   = t === 'reg'   ? 'block' : 'none';
+}
+
+async function doLogin() {
+  const btn = document.getElementById('loginBtn');
+  const errEl = document.getElementById('loginErr');
+  errEl.classList.remove('show');
+  btn.innerHTML = '<span class="loading-spinner"></span> Signing in…';
+  btn.disabled = true;
+  try {
+    const data = await api('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email: document.getElementById('l_email').value, password: document.getElementById('l_pass').value })
+    });
+    setAuth(data.token, data.user);
+    launchApp(data.user);
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.classList.add('show');
+  } finally {
+    btn.innerHTML = '<i class="ti ti-login"></i> Sign in';
+    btn.disabled = false;
+  }
+}
+
+async function doRegister() {
+  const btn = document.getElementById('regBtn');
+  const errEl = document.getElementById('regErr');
+  errEl.classList.remove('show');
+  btn.innerHTML = '<span class="loading-spinner"></span> Creating…';
+  btn.disabled = true;
+  try {
+    const data = await api('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        name: document.getElementById('r_nameF').value + ' ' + document.getElementById('r_nameL').value,
+        email: document.getElementById('r_email').value,
+        password: document.getElementById('r_pass').value
+      })
+    });
+    setAuth(data.token, data.user);
+    launchApp(data.user);
+  } catch (e) {
+    errEl.textContent = e.message;
+    errEl.classList.add('show');
+  } finally {
+    btn.innerHTML = '<i class="ti ti-user-plus"></i> Create account';
+    btn.disabled = false;
+  }
+}
+
+function doLogout() {
+  clearAuth();
+  document.getElementById('mainApp').style.display = 'none';
+  document.getElementById('authScreen').style.display = 'flex';
+}
+
+// ── Launch ────────────────────────────────────────────────────────────────
+function launchApp(user) {
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'flex';
+  const initials = user.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  document.getElementById('sideAvatar').textContent = initials;
+  document.getElementById('sideName').textContent = user.name;
+  document.getElementById('sideRole').textContent = user.role === 'admin' ? 'Administrator' : 'Volunteer';
+  if (user.role !== 'admin') document.getElementById('navAdmin').style.display = 'none';
+  loadDashboard();
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────
+function nav(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const titles = { dashboard:'Dashboard', register:'Registration', volunteers:'Volunteers', events:'Events', admin:'Admin Panel', reports:'Reports' };
+  document.getElementById('pageTitle').textContent = titles[page] || page;
+  document.getElementById('pageCrumb').textContent = 'VolunteerHub / ' + (titles[page] || page);
+  if (page === 'volunteers') loadVolunteers();
+  if (page === 'events')     loadEvents();
+  if (page === 'admin')      loadAdmin();
+  if (page === 'register')   resetReg();
+  if (page === 'dashboard')  loadDashboard();
+}
+
+// ── Dashboard ─────────────────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const [statsData, evData, volData] = await Promise.all([
+      api('/volunteers/stats'),
+      api('/events'),
+      api('/volunteers?limit=5')
+    ]);
+    CACHE.stats = statsData;
+    CACHE.events = evData.events || [];
+    document.getElementById('st-total').textContent   = statsData.total   ?? '—';
+    document.getElementById('st-active').textContent  = statsData.active  ?? '—';
+    document.getElementById('st-pending').textContent = statsData.pending ?? '—';
+    document.getElementById('st-events').textContent  = CACHE.events.filter(e => e.status !== 'Closed').length;
+
+    // Chart
+    if (statsData.monthlyData?.length) {
+      const max = Math.max(...statsData.monthlyData.map(d => d.count), 1);
+      document.getElementById('chartBars').innerHTML = statsData.monthlyData.map(d =>
+        `<div class="chart-bar-wrap"><div class="chart-bar" style="height:${Math.round(d.count/max*100)}%"></div><div class="chart-bar-label">${d.label}</div></div>`
+      ).join('');
+    }
+
+    // Skills
+    if (statsData.skills?.length) {
+      const max2 = statsData.skills[0].count;
+      document.getElementById('skillsChart').innerHTML = statsData.skills.map(s =>
+        `<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${s._id}</span><span style="font-weight:600;color:var(--primary)">${s.count}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${Math.round(s.count/max2*100)}%"></div></div></div>`
+      ).join('');
+    }
+
+    // Recent volunteers
+    const vols = volData.volunteers || [];
+    document.getElementById('recentBody').innerHTML = vols.length
+      ? vols.map(v => `<tr><td style="font-weight:500">${v.fname} ${v.lname}</td><td>${v.skills.slice(0,2).map(s=>`<span class="skill-tag">${s}</span>`).join('')}</td><td>${badge(v.status)}</td></tr>`).join('')
+      : '<tr><td colspan="3"><div class="empty-state" style="padding:20px"><i class="ti ti-users"></i><p>No volunteers yet</p></div></td></tr>';
+
+  } catch (e) {
+    showNotif('Could not load dashboard: ' + e.message, 'd');
+  }
+}
+
+// ── Volunteers ────────────────────────────────────────────────────────────
+async function loadVolunteers() {
+  const search = document.getElementById('volSearch')?.value || '';
+  const status = document.getElementById('volStatus')?.value || '';
+  try {
+    const params = {};
+    if (search) params.search = search;
+    if (status) params.status = status;
+    const qs = new URLSearchParams(params).toString();
+    const data = await api('/volunteers' + (qs ? '?' + qs : ''));
+    const vols = data.volunteers || [];
+    CACHE.volunteers = vols;
+    document.getElementById('volCount').textContent = data.total + ' total';
+    document.getElementById('volBody').innerHTML = vols.length
+      ? vols.map(v => `<tr>
+          <td style="font-weight:500">${v.fname} ${v.lname}</td>
+          <td style="color:var(--gray-500)">${v.email}</td>
+          <td>${v.phone}</td>
+          <td>${v.skills.slice(0,2).map(s=>`<span class="skill-tag">${s}</span>`).join('')}</td>
+          <td>${badge(v.status)}</td>
+          <td style="color:var(--gray-500)">${v.createdAt?.slice(0,10)}</td>
+          <td style="display:flex;gap:4px">
+            <button class="btn btn-ghost btn-sm" onclick="viewVol('${v._id}')"><i class="ti ti-eye"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="delVol('${v._id}','${v.fname} ${v.lname}')"><i class="ti ti-trash" style="color:var(--danger)"></i></button>
+          </td>
+        </tr>`).join('')
+      : '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-users"></i><p>No volunteers found</p></div></td></tr>';
+  } catch (e) {
+    showNotif('Failed to load volunteers: ' + e.message, 'd');
+  }
+}
+
+async function viewVol(id) {
+  try {
+    const { volunteer: v } = await api(`/volunteers/${id}`);
+    document.getElementById('viewBody').innerHTML = `
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
+        <div class="avatar" style="width:48px;height:48px;font-size:16px">${v.fname[0]}${v.lname[0]}</div>
+        <div><div style="font-size:16px;font-weight:700">${v.fname} ${v.lname}</div><div style="font-size:13px;color:var(--gray-500)">${v.email}</div></div>
+        ${badge(v.status)}
+      </div>
+      <div class="info-grid">
+        <div class="info-row"><div class="info-key">Phone</div><div class="info-val">${v.phone}</div></div>
+        <div class="info-row"><div class="info-key">Gender</div><div class="info-val">${v.gender||'—'}</div></div>
+        <div class="info-row"><div class="info-key">DOB</div><div class="info-val">${v.dob||'—'}</div></div>
+        <div class="info-row"><div class="info-key">Registered</div><div class="info-val">${v.createdAt?.slice(0,10)}</div></div>
+        <div class="info-row"><div class="info-key">Role</div><div class="info-val">${v.preferredRole}</div></div>
+        <div class="info-row"><div class="info-key">Hours/week</div><div class="info-val">${v.hoursPerWeek}</div></div>
+        <div class="info-row"><div class="info-key">Experience</div><div class="info-val">${v.experience}</div></div>
+        <div class="info-row"><div class="info-key">Address</div><div class="info-val">${v.address||'—'}</div></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;margin-bottom:8px">Skills</div>
+      <div>${v.skills.map(s=>`<span class="skill-tag">${s}</span>`).join('')}</div>
+      ${v.availability?.length ? `<div class="divider"></div><div style="font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;margin-bottom:8px">Available days</div><div style="font-size:13px">${v.availability.join(', ')}</div>` : ''}
+      ${v.motivation ? `<div class="divider"></div><div style="font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;margin-bottom:8px">Motivation</div><p style="font-size:13px;color:var(--gray-700)">${v.motivation}</p>` : ''}`;
+    openModal('viewModal');
+  } catch (e) { showNotif('Failed to load profile: ' + e.message, 'd'); }
+}
+
+async function delVol(id, name) {
+  if (!confirm(`Delete volunteer "${name}"? This cannot be undone.`)) return;
+  try {
+    await api(`/volunteers/${id}`, { method: 'DELETE' });
+    showNotif(name + ' deleted', 'd');
+    loadVolunteers(); loadDashboard(); loadAdmin();
+  } catch (e) { showNotif('Delete failed: ' + e.message, 'd'); }
+}
+
+// ── Events ────────────────────────────────────────────────────────────────
+async function loadEvents() {
+  try {
+    const { events } = await api('/events');
+    CACHE.events = events || [];
+    document.getElementById('evBody').innerHTML = events.length
+      ? events.map(e => `<tr>
+          <td style="font-weight:500">${e.name}</td><td>${e.date}</td><td>${e.location}</td><td>${e.needed}</td>
+          <td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="width:80px"><div class="progress-fill" style="width:${Math.round(e.registered/e.needed*100)}%"></div></div><span style="font-size:12px">${e.registered}/${e.needed}</span></div></td>
+          <td>${badge(e.status)}</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="delEvent('${e._id}','${e.name}')"><i class="ti ti-trash" style="color:var(--danger)"></i></button></td>
+        </tr>`).join('')
+      : '<tr><td colspan="7"><div class="empty-state"><i class="ti ti-calendar-event"></i><p>No events yet</p></div></td></tr>';
+  } catch (e) { showNotif('Failed to load events: ' + e.message, 'd'); }
+}
+
+function openEventModal() { openModal('eventModal'); }
+
+async function submitEvent() {
+  const name = document.getElementById('ev_n').value.trim();
+  if (!name) { showNotif('Event name is required', 'd'); return; }
+  const btn = document.getElementById('evBtn');
+  btn.innerHTML = '<span class="loading-spinner"></span> Saving…'; btn.disabled = true;
+  try {
+    await api('/events', {
+      method: 'POST',
+      body: JSON.stringify({
+        name, date: document.getElementById('ev_d').value,
+        location: document.getElementById('ev_l').value,
+        needed: parseInt(document.getElementById('ev_nv').value) || 10,
+        category: document.getElementById('ev_c').value,
+        description: document.getElementById('ev_desc').value,
+      })
+    });
+    closeModal('eventModal');
+    showNotif('Event created!', 's');
+    ['ev_n','ev_d','ev_l','ev_desc'].forEach(id => document.getElementById(id).value = '');
+    loadEvents(); loadDashboard();
+  } catch (e) { showNotif('Failed: ' + e.message, 'd'); }
+  finally { btn.innerHTML = '<i class="ti ti-plus"></i> Create event'; btn.disabled = false; }
+}
+
+async function delEvent(id, name) {
+  if (!confirm(`Delete event "${name}"?`)) return;
+  try {
+    await api(`/events/${id}`, { method: 'DELETE' });
+    showNotif(name + ' deleted', 'd');
+    loadEvents(); loadDashboard();
+  } catch (e) { showNotif('Delete failed: ' + e.message, 'd'); }
+}
+
+// ── Admin ─────────────────────────────────────────────────────────────────
+async function loadAdmin() {
+  try {
+    const [volData] = await Promise.all([api('/volunteers')]);
+    const all = volData.volunteers || [];
+    const pending = all.filter(v => v.status === 'Pending');
+    document.getElementById('pendCount').textContent = pending.length;
+    document.getElementById('pendBody').innerHTML = pending.length
+      ? pending.map(v => `<tr>
+          <td style="font-weight:500">${v.fname} ${v.lname}</td>
+          <td style="color:var(--gray-500)">${v.email}</td>
+          <td>${v.createdAt?.slice(0,10)}</td>
+          <td style="display:flex;gap:6px">
+            <button class="btn btn-success btn-sm" onclick="setStatus('${v._id}','Active','${v.fname}')"><i class="ti ti-check"></i> Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="setStatus('${v._id}','Inactive','${v.fname}')"><i class="ti ti-x"></i></button>
+          </td></tr>`).join('')
+      : '<tr><td colspan="4"><div class="empty-state" style="padding:20px"><i class="ti ti-check"></i><p>No pending approvals</p></div></td></tr>';
+    document.getElementById('adminBody').innerHTML = all.map(v => `<tr>
+      <td style="font-weight:500">${v.fname} ${v.lname}</td>
+      <td style="color:var(--gray-500)">${v.email}</td>
+      <td>${badge(v.status)}</td>
+      <td>${v.preferredRole}</td>
+      <td>${v.experience}</td>
+      <td style="display:flex;gap:4px">
+        <button class="btn btn-ghost btn-sm" onclick="viewVol('${v._id}')"><i class="ti ti-eye"></i></button>
+        <button class="btn btn-ghost btn-sm" onclick="cycleStatus('${v._id}','${v.status}')"><i class="ti ti-refresh"></i></button>
+      </td></tr>`).join('');
+  } catch (e) { showNotif('Failed to load admin data: ' + e.message, 'd'); }
+}
+
+async function setStatus(id, status, name) {
+  try {
+    await api(`/volunteers/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) });
+    showNotif(`${name} ${status === 'Active' ? 'approved ✓' : 'rejected'}`, status === 'Active' ? 's' : 'd');
+    loadAdmin(); loadDashboard();
+  } catch (e) { showNotif('Failed: ' + e.message, 'd'); }
+}
+
+async function cycleStatus(id, current) {
+  const next = current === 'Active' ? 'Inactive' : 'Active';
+  try {
+    await api(`/volunteers/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status: next }) });
+    showNotif('Status → ' + next, 's');
+    loadAdmin(); loadDashboard();
+  } catch (e) { showNotif('Failed: ' + e.message, 'd'); }
+}
+
+// ── Registration form ─────────────────────────────────────────────────────
+function resetReg() {
+  CACHE.regStep = 1; CACHE.selectedSkills = [];
+  ['sf1','sf2','sf3'].forEach((id, i) => document.getElementById(id).style.display = i === 0 ? 'block' : 'none');
+  document.getElementById('btnBack').style.display = 'none';
+  document.getElementById('btnNext').innerHTML = 'Next <i class="ti ti-arrow-right"></i>';
+  document.getElementById('stepTitle').textContent = 'Step 1 — Personal information';
+  document.querySelectorAll('#skillPills .pill').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('[name=avail]').forEach(c => c.checked = false);
+  updateStepUI(1);
+}
+
+function updateStepUI(s) {
+  for (let i = 1; i <= 3; i++) {
+    const num = document.getElementById('sn' + i);
+    const lbl = document.getElementById('sl' + i);
+    num.className = 'step-num' + (i < s ? ' done' : i === s ? ' cur' : '');
+    lbl.className = 'step-label' + (i === s ? ' cur' : '');
+    num.innerHTML = i < s ? '<i class="ti ti-check" style="font-size:12px"></i>' : String(i);
+    if (i < 3) document.getElementById('stl' + i).className = 'step-line' + (i < s ? ' done' : '');
+  }
+}
+
+function togglePill(el, skill) {
+  el.classList.toggle('on');
+  if (el.classList.contains('on')) CACHE.selectedSkills.push(skill);
+  else CACHE.selectedSkills = CACHE.selectedSkills.filter(s => s !== skill);
+}
+
+function regBack() {
+  CACHE.regStep = 1;
+  document.getElementById('sf2').style.display = 'none';
+  document.getElementById('sf1').style.display = 'block';
+  document.getElementById('btnBack').style.display = 'none';
+  document.getElementById('btnNext').innerHTML = 'Next <i class="ti ti-arrow-right"></i>';
+  document.getElementById('stepTitle').textContent = 'Step 1 — Personal information';
+  updateStepUI(1);
+}
+
+async function regNext() {
+  if (CACHE.regStep === 1) {
+    let ok = true;
+    const fields = [['v_fn','e_fn',v=>v.length>0],['v_ln','e_ln',v=>v.length>0],['v_em','e_em',v=>/\S+@\S+\.\S+/.test(v)],['v_ph','e_ph',v=>v.length>0]];
+    fields.forEach(([inp, err, valid]) => {
+      const v = document.getElementById(inp).value.trim();
+      const pass = valid(v);
+      document.getElementById(err).classList.toggle('show', !pass);
+      document.getElementById(inp).classList.toggle('err', !pass);
+      if (!pass) ok = false;
+    });
+    if (!ok) return;
+    CACHE.regStep = 2;
+    document.getElementById('sf1').style.display = 'none';
+    document.getElementById('sf2').style.display = 'block';
+    document.getElementById('btnBack').style.display = 'inline-flex';
+    document.getElementById('btnNext').innerHTML = 'Submit <i class="ti ti-send"></i>';
+    document.getElementById('stepTitle').textContent = 'Step 2 — Skills & availability';
+    updateStepUI(2);
+  } else if (CACHE.regStep === 2) {
+    if (!document.getElementById('v_terms').checked) {
+      document.getElementById('e_terms').classList.add('show'); return;
+    }
+    document.getElementById('e_terms').classList.remove('show');
+    await submitRegistration();
+  }
+}
+
+async function submitRegistration() {
+  const btn = document.getElementById('btnNext');
+  btn.innerHTML = '<span class="loading-spinner"></span> Submitting…'; btn.disabled = true;
+  const payload = {
+    fname: document.getElementById('v_fn').value.trim(),
+    lname: document.getElementById('v_ln').value.trim(),
+    email: document.getElementById('v_em').value.trim(),
+    phone: document.getElementById('v_ph').value.trim(),
+    dob:   document.getElementById('v_dob').value,
+    gender: document.getElementById('v_gn').value,
+    address: document.getElementById('v_addr').value,
+    emName:  document.getElementById('v_emn').value,
+    emPhone: document.getElementById('v_emp').value,
+    skills: CACHE.selectedSkills.length ? CACHE.selectedSkills : ['General'],
+    availability: [...document.querySelectorAll('[name=avail]:checked')].map(c => c.value),
+    hoursPerWeek:  document.getElementById('v_hrs').value,
+    preferredRole: document.getElementById('v_rol').value,
+    experience:    document.getElementById('v_exp').value,
+    motivation:    document.getElementById('v_mot').value,
+  };
+  try {
+    const { volunteer } = await api('/volunteers', { method: 'POST', body: JSON.stringify(payload) });
+    document.getElementById('sf2').style.display = 'none';
+    document.getElementById('sf3').style.display = 'block';
+    document.getElementById('btnBack').style.display = 'none';
+    btn.innerHTML = '+ Register another';
+    btn.disabled = false;
+    btn.onclick = () => { btn.onclick = regNext; resetReg(); };
+    document.getElementById('stepTitle').textContent = 'Registration submitted';
+    updateStepUI(3);
+    document.getElementById('summaryBox').innerHTML = `
+      <div class="info-grid">
+        <div class="info-row"><div class="info-key">Name</div><div class="info-val">${volunteer.fname} ${volunteer.lname}</div></div>
+        <div class="info-row"><div class="info-key">Email</div><div class="info-val">${volunteer.email}</div></div>
+        <div class="info-row"><div class="info-key">Role</div><div class="info-val">${volunteer.preferredRole}</div></div>
+        <div class="info-row"><div class="info-key">Skills</div><div class="info-val">${volunteer.skills.join(', ')}</div></div>
+        <div class="info-row"><div class="info-key">Status</div><div class="info-val">${badge(volunteer.status)}</div></div>
+        <div class="info-row"><div class="info-key">MongoDB ID</div><div class="info-val" style="font-size:10px;word-break:break-all">${volunteer._id}</div></div>
+      </div>`;
+    showNotif('Registration saved to MongoDB!', 's');
+    loadDashboard();
+  } catch (e) {
+    showNotif('Registration failed: ' + e.message, 'd');
+    btn.innerHTML = 'Submit <i class="ti ti-send"></i>';
+    btn.disabled = false;
+  }
+}
+
+// ── Reports ───────────────────────────────────────────────────────────────
+async function generateReport(type) {
+  document.getElementById('rDl').style.display = 'inline-flex';
+  const body = document.getElementById('rBody');
+  body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--gray-400)"><i class="ti ti-loader" style="font-size:24px"></i><p style="margin-top:8px">Generating report…</p></div>';
+  try {
+    if (type === 'volunteers') {
+      const { volunteers } = await api('/volunteers');
+      document.getElementById('rTitle').textContent = 'Volunteer summary';
+      body.innerHTML = `<table><thead><tr><th>Name</th><th>Status</th><th>Role</th><th>Skills</th><th>Joined</th></tr></thead><tbody>${volunteers.map(v=>`<tr><td style="font-weight:500">${v.fname} ${v.lname}</td><td>${badge(v.status)}</td><td>${v.preferredRole}</td><td>${v.skills.join(', ')}</td><td>${v.createdAt?.slice(0,10)}</td></tr>`).join('')}</tbody></table>`;
+    } else if (type === 'skills') {
+      const { skills } = await api('/volunteers/stats');
+      document.getElementById('rTitle').textContent = 'Skills breakdown';
+      const max = skills[0]?.count || 1;
+      body.innerHTML = `<table><thead><tr><th>Skill</th><th>Volunteers</th><th>Distribution</th></tr></thead><tbody>${skills.map(s=>`<tr><td style="font-weight:500">${s._id}</td><td>${s.count}</td><td><div class="progress-bar" style="width:120px"><div class="progress-fill" style="width:${Math.round(s.count/max*100)}%"></div></div></td></tr>`).join('')}</tbody></table>`;
+    } else if (type === 'events') {
+      const { events } = await api('/events');
+      document.getElementById('rTitle').textContent = 'Event participation';
+      body.innerHTML = `<table><thead><tr><th>Event</th><th>Date</th><th>Needed</th><th>Registered</th><th>Fill rate</th><th>Status</th></tr></thead><tbody>${events.map(e=>`<tr><td style="font-weight:500">${e.name}</td><td>${e.date}</td><td>${e.needed}</td><td>${e.registered}</td><td>${Math.round(e.registered/e.needed*100)}%</td><td>${badge(e.status)}</td></tr>`).join('')}</tbody></table>`;
+    } else if (type === 'monthly') {
+      const { monthlyData } = await api('/volunteers/stats');
+      document.getElementById('rTitle').textContent = 'Monthly registrations';
+      const max = Math.max(...monthlyData.map(d => d.count), 1);
+      body.innerHTML = `<table><thead><tr><th>Month</th><th>Registrations</th><th>Trend</th></tr></thead><tbody>${monthlyData.map(d=>`<tr><td style="font-weight:500">${d.label}</td><td>${d.count}</td><td><div class="progress-bar" style="width:100px"><div class="progress-fill" style="width:${Math.round(d.count/max*100)}%"></div></div></td></tr>`).join('')}</tbody></table>`;
+    }
+  } catch (e) {
+    body.innerHTML = `<div class="empty-state"><i class="ti ti-alert-circle" style="color:var(--danger)"></i><p>Failed to generate: ${e.message}</p></div>`;
+  }
+}
+
+// ── Export CSV ────────────────────────────────────────────────────────────
+async function exportCSV() {
+  try {
+    const { volunteers } = await api('/volunteers');
+    const rows = [['ID','First','Last','Email','Phone','Skills','Status','Role','Experience','Joined']];
+    volunteers.forEach(v => rows.push([v._id, v.fname, v.lname, v.email, v.phone, v.skills.join(';'), v.status, v.preferredRole, v.experience, v.createdAt?.slice(0,10)]));
+    const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `volunteers_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    showNotif('CSV exported!', 's');
+  } catch (e) { showNotif('Export failed: ' + e.message, 'd'); }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────
+function badge(s) {
+  const m = { Active:'badge-success', Pending:'badge-warning', Inactive:'badge-gray', Open:'badge-success', Full:'badge-danger', Closed:'badge-gray' };
+  return `<span class="badge ${m[s]||'badge-gray'}">${s}</span>`;
+}
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+let notifTimer;
+function showNotif(msg, type = 's') {
+  const n = document.getElementById('notif');
+  n.className = 'notif notif-' + type + ' show';
+  document.getElementById('notifIcon').className = 'ti ' + (type === 's' ? 'ti-check' : 'ti-alert-circle');
+  document.getElementById('notifText').textContent = msg;
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => n.classList.remove('show'), 3500);
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────
+(async function boot() {
+  await checkAPI();
+  // Re-hydrate session if token exists
+  const token = getToken();
+  const user  = getUser();
+  if (token && user) {
+    try {
+      await api('/auth/me'); // verify token still valid
+      launchApp(user);
+    } catch {
+      clearAuth();
+    }
+  }
+})();
+</script>
+</body>
+</html>
