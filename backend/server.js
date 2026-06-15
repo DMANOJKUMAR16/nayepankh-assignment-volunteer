@@ -9,11 +9,25 @@ const eventRoutes      = require('./routes/events');
 
 const app = express();
 
-// ── Middleware ─────────────────────────────────────────────────────────────
+// ── CORS — allow file://, localhost, and production domains ───────────────
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: function(origin, callback) {
+    // Allow requests with no origin (file://, Postman, mobile apps)
+    if (!origin) return callback(null, true);
+    // Allow any localhost port
+    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+      return callback(null, true);
+    }
+    // Allow production domains (set FRONTEND_URL in .env)
+    const allowed = (process.env.FRONTEND_URL || '').split(',').map(s => s.trim());
+    if (allowed.includes(origin)) return callback(null, true);
+    // Allow all in development
+    if (process.env.NODE_ENV !== 'production') return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
 }));
+
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true }));
 
